@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Inquiry Form - Appointmentbookings.co.za</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for shadcn/ui-like appearance, if not using actual shadcn */
+        .input-class {
+            display: flex;
+            height: 2.5rem; /* h-10 */
+            width: 100%;
+            border-radius: 0.375rem; /* rounded-md */
+            border: 1px solid #e2e8f0; /* border-input */
+            background-color: #ffffff; /* bg-background */
+            padding: 0.5rem 0.75rem; /* px-3 py-2 */
+            font-size: 0.875rem; /* text-sm */
+            ring-offset-width: 2px; /* ring-offset-background */
+            outline: none;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        }
+        .input-class:focus-visible {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px var(--ring); /* ring-ring */
+        }
+        .textarea-class {
+            display: flex;
+            width: 100%;
+            min-height: 5rem; /* min-h-[80px] */
+            border-radius: 0.375rem; /* rounded-md */
+            border: 1px solid #e2e8f0; /* border-input */
+            background-color: #ffffff; /* bg-background */
+            padding: 0.5rem 0.75rem; /* px-3 py-2 */
+            font-size: 0.875rem; /* text-sm */
+            ring-offset-width: 2px; /* ring-offset-background */
+            outline: none;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        }
+        .textarea-class:focus-visible {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px var(--ring); /* ring-ring */
+        }
+        .button-class {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            height: 2.5rem; /* h-10 */
+            padding: 0 1rem; /* px-4 py-2 */
+            transition-property: background-color, color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-duration: 150ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #0d9488; /* bg-primary-600 */
+            color: #ffffff; /* text-primary-foreground */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        }
+        .button-class:hover {
+            background-color: #0f766e; /* hover:bg-primary-700 */
+        }
+        .button-class:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .checkbox-class {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid #a1a1aa; /* border-primary */
+            border-radius: 0.25rem; /* rounded */
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            cursor: pointer;
+            background-color: #ffffff; /* bg-background */
+            transition: all 0.2s;
+        }
+        .checkbox-class:checked {
+            background-color: #0d9488; /* bg-primary-600 */
+            border-color: #0d9488; /* border-primary-600 */
+        }
+        .checkbox-class:checked::after {
+            content: '\2713'; /* Checkmark symbol */
+            color: white;
+            font-size: 0.75rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .label-class {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            line-height: 1.25rem; /* leading-none */
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen py-12">
+    <div class="container mx-auto p-4 md:p-8 max-w-lg bg-white shadow-lg rounded-lg my-8">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Service Inquiry</h2>
+        <p class="text-center text-gray-600 mb-8">
+            Interested in how Appointmentbookings.co.za can streamline your business? Fill out the form below.
+        </p>
+
+        <form id="inquiryForm" class="space-y-6">
+            <div>
+                <label for="businessName" class="label-class text-gray-700">Business Name <span class="text-red-500">*</span></label>
+                <input
+                    id="businessName"
+                    type="text"
+                    placeholder="e.g., Instyle Hair Boutique"
+                    required
+                    class="input-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                />
+            </div>
+
+            <div>
+                <label for="contactPerson" class="label-class text-gray-700">Contact Person's Name <span class="text-red-500">*</span></label>
+                <input
+                    id="contactPerson"
+                    type="text"
+                    placeholder="Your Name"
+                    required
+                    class="input-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                />
+            </div>
+
+            <div>
+                <label for="contactEmail" class="label-class text-gray-700">Contact Email <span class="text-red-500">*</span></label>
+                <input
+                    id="contactEmail"
+                    type="email"
+                    placeholder="you@example.com"
+                    required
+                    class="input-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                />
+            </div>
+
+            <div>
+                <label for="contactPhone" class="label-class text-gray-700">Contact Phone Number (Optional)</label>
+                <input
+                    id="contactPhone"
+                    type="tel"
+                    placeholder="+27 (0)xx xxx xxxx"
+                    class="input-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                />
+            </div>
+
+            <div>
+                <label class="label-class text-gray-700 mb-2 block">Services of Interest</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="Appointment Booking System" name="service" value="Appointment Booking System" class="checkbox-class" />
+                        <label for="Appointment Booking System" class="label-class text-gray-700 cursor-pointer">Appointment Booking System</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="White-label Solution" name="service" value="White-label Solution" class="checkbox-class" />
+                        <label for="White-label Solution" class="label-class text-gray-700 cursor-pointer">White-label Solution</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="AI Customer Service Agent" name="service" value="AI Customer Service Agent" class="checkbox-class" />
+                        <label for="AI Customer Service Agent" class="label-class text-gray-700 cursor-pointer">AI Customer Service Agent</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="Marketing Integration (Email/SMS)" name="service" value="Marketing Integration (Email/SMS)" class="checkbox-class" />
+                        <label for="Marketing Integration (Email/SMS)" class="label-class text-gray-700 cursor-pointer">Marketing Integration (Email/SMS)</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="Social Media Integration" name="service" value="Social Media Integration" class="checkbox-class" />
+                        <label for="Social Media Integration" class="label-class text-gray-700 cursor-pointer">Social Media Integration</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="E-commerce Storefront Integration" name="service" value="E-commerce Storefront Integration" class="checkbox-class" />
+                        <label for="E-commerce Storefront Integration" class="label-class text-gray-700 cursor-pointer">E-commerce Storefront Integration</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="Other (Please specify)" name="service" value="Other (Please specify)" class="checkbox-class" />
+                        <label for="Other (Please specify)" class="label-class text-gray-700 cursor-pointer">Other (Please specify)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="otherServiceInput" style="display: none;">
+                <label for="otherService" class="label-class text-gray-700">Please specify 'Other' service</label>
+                <input
+                    id="otherService"
+                    type="text"
+                    placeholder="e.g., Custom Integration"
+                    class="input-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                />
+            </div>
+
+            <div>
+                <label for="needsDescription" class="label-class text-gray-700">Brief Description of Your Needs (Optional)</label>
+                <textarea
+                    id="needsDescription"
+                    placeholder="Tell us more about what you're looking for..."
+                    rows="4"
+                    class="textarea-class mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                ></textarea>
+            </div>
+
+            <button
+                type="submit"
+                id="submitButton"
+                class="button-class w-full py-3 text-lg font-semibold bg-primary-600 text-white hover:bg-primary-700 focus:ring-4 focus:ring-primary-500 focus:ring-opacity-50 rounded-md disabled:opacity-50"
+            >
+                Send Inquiry
+            </button>
+
+            <p id="successMessage" class="text-center text-green-600 mt-4" style="display: none;">Inquiry sent successfully! We'll be in touch soon.</p>
+            <p id="errorMessage" class="text-center text-red-600 mt-4" style="display: none;"></p>
+        </form>
+    </div>
+
+    <script>
+        // --- Supabase Configuration ---
+        // IMPORTANT: Replace 'YOUR_SUPABASE_URL' and 'YOUR_SUPABASE_ANON_KEY' with your actual values.
+        // You can find these in your Supabase project settings under 'API Settings'.
+        const SUPABASE_URL = 'https://cxbbzhxkeirzurhvlmtn.supabase.co'; // Your Supabase Project URL
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YmJ6aHhrZWlyenVyaHZsbXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTEzNDUsImV4cCI6MjA2MjUyNzM0NX0.t6zr-5BJXQGvrDvHBt_x7R1in0tu8rQAsQX5Tsl4hak'; // Your Supabase Public Anon Key
+
+        // --- Supabase Client (very basic for static HTML) ---
+        // For a more robust solution, you'd typically include the @supabase/supabase-js library.
+        // For this standalone HTML, we'll use a direct fetch approach.
+        async function supabaseFetch(method, path, body = null) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            };
+            const options = { method, headers };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            const response = await fetch(`${SUPABASE_URL}${path}`, options);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Supabase operation failed');
+            }
+            return data;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('inquiryForm');
+            const submitButton = document.getElementById('submitButton');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const otherServiceCheckbox = document.getElementById('Other (Please specify)');
+            const otherServiceInputDiv = document.getElementById('otherServiceInput');
+            const otherServiceInputField = document.getElementById('otherService');
+
+            const serviceCheckboxes = form.querySelectorAll('input[name="service"]');
+
+            otherServiceCheckbox.addEventListener('change', () => {
+                if (otherServiceCheckbox.checked) {
+                    otherServiceInputDiv.style.display = 'block';
+                    otherServiceInputField.required = true; // Make it required if selected
+                } else {
+                    otherServiceInputDiv.style.display = 'none';
+                    otherServiceInputField.required = false;
+                    otherServiceInputField.value = ''; // Clear value if unchecked
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending Inquiry...';
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+
+                const businessName = document.getElementById('businessName').value;
+                const contactPerson = document.getElementById('contactPerson').value;
+                const contactEmail = document.getElementById('contactEmail').value;
+                const contactPhone = document.getElementById('contactPhone').value;
+                const needsDescription = document.getElementById('needsDescription').value;
+
+                const servicesOfInterest = [];
+                serviceCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        servicesOfInterest.push(checkbox.value);
+                    }
+                });
+
+                let otherService = '';
+                if (servicesOfInterest.includes('Other (Please specify)')) {
+                    otherService = otherServiceInputField.value;
+                }
+
+                const formData = {
+                    business_name: businessName,
+                    contact_person: contactPerson,
+                    contact_email: contactEmail,
+                    contact_phone: contactPhone,
+                    services_of_interest: servicesOfInterest,
+                    needs_description: needsDescription,
+                    other_service_specified: otherService, // Renamed for clarity in DB
+                    // Add a timestamp or created_at in Supabase for auto-generation
+                };
+
+                try {
+                    // --- Supabase Table Name ---
+                    // Make sure you have a table named 'inquiries' in your Supabase project
+                    // with columns matching the keys in `formData` (e.g., business_name TEXT, services_of_interest JSONB)
+                    const data = await supabaseFetch('POST', '/rest/v1/inquiries', [formData]);
+                    console.log('Inquiry sent successfully:', data);
+                    successMessage.style.display = 'block';
+                    form.reset(); // Clear the form
+                    otherServiceInputDiv.style.display = 'none'; // Hide other service input
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    errorMessage.textContent = `Failed to send inquiry: ${error.message || 'Unknown error'}`;
+                    errorMessage.style.display = 'block';
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Inquiry';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
