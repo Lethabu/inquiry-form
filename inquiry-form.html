@@ -222,110 +222,128 @@
     </div>
 
     <script>
-        // --- Supabase Configuration ---
-        // IMPORTANT: Replace 'YOUR_SUPABASE_URL' and 'YOUR_SUPABASE_ANON_KEY' with your actual values.
-        // You can find these in your Supabase project settings under 'API Settings'.
-        const SUPABASE_URL = 'https://cxbbzhxkeirzurhvlmtn.supabase.co'; // Your Supabase Project URL
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YmJ6aHhrZWlyenVyaHZsbXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTEzNDUsImV4cCI6MjA2MjUyNzM0NX0.t6zr-5BJXQGvrDvHBt_x7R1in0tu8rQAsQX5Tsl4hak'; // Your Supabase Public Anon Key
+    // --- Supabase Configuration ---
+    // IMPORTANT: Replace 'YOUR_SUPABASE_ANON_KEY' with your actual value.
+    const SUPABASE_URL = 'https://cxbbzhxkeirzurhvlmtn.supabase.co'; // Your Supabase Project URL
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YmJ6aHhrZWlyenVyaHZsbXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTEzNDUsImV4cCI6MjA2MjUyNzM0NX0.t6zr-5BJXQGvrDvHBt_x7R1in0tu8rQAsQX5Tsl4hak'; // Your Supabase Public Anon Key
 
-        // --- Supabase Client (very basic for static HTML) ---
-        // For a more robust solution, you'd typically include the @supabase/supabase-js library.
-        // For this standalone HTML, we'll use a direct fetch approach.
-        async function supabaseFetch(method, path, body = null) {
-            const headers = {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            };
-            const options = { method, headers };
-            if (body) {
-                options.body = JSON.stringify(body);
-            }
-            const response = await fetch(`${SUPABASE_URL}${path}`, options);
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || 'Supabase operation failed');
-            }
-            return data;
+    // --- Supabase Client (robust for static HTML) ---
+    async function supabaseFetch(method, path, body = null) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        };
+        const options = { method, headers };
+        if (body) {
+            options.body = JSON.stringify(body);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('inquiryForm');
-            const submitButton = document.getElementById('submitButton');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const otherServiceCheckbox = document.getElementById('Other (Please specify)');
-            const otherServiceInputDiv = document.getElementById('otherServiceInput');
-            const otherServiceInputField = document.getElementById('otherService');
+        const response = await fetch(`${SUPABASE_URL}${path}`, options);
 
-            const serviceCheckboxes = form.querySelectorAll('input[name="service"]');
+        if (!response.ok) {
+            // If response is not OK (e.g., 4xx, 5xx), try to parse error as JSON, otherwise read as text
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = await response.text();
+            }
+            throw new Error(errorData.message || response.statusText || 'Supabase operation failed');
+        }
 
-            otherServiceCheckbox.addEventListener('change', () => {
-                if (otherServiceCheckbox.checked) {
-                    otherServiceInputDiv.style.display = 'block';
-                    otherServiceInputField.required = true; // Make it required if selected
-                } else {
-                    otherServiceInputDiv.style.display = 'none';
-                    otherServiceInputField.required = false;
-                    otherServiceInputField.value = ''; // Clear value if unchecked
-                }
-            });
+        // If response is OK (2xx), but might be empty or not perfectly JSON
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            try {
+                return await response.json();
+            } catch (e) {
+                // If it claims to be JSON but fails to parse, return null or an empty object
+                console.warn('Response claimed JSON but failed to parse:', e);
+                return null; 
+            }
+        } else {
+            // If not JSON, or no content-type, just return null as we know data was likely inserted
+            console.warn('Supabase operation successful, but response was not JSON or empty:', await response.text());
+            return null; 
+        }
+    }
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                submitButton.disabled = true;
-                submitButton.textContent = 'Sending Inquiry...';
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('inquiryForm');
+        const submitButton = document.getElementById('submitButton');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const otherServiceCheckbox = document.getElementById('Other (Please specify)');
+        const otherServiceInputDiv = document.getElementById('otherServiceInput');
+        const otherServiceInputField = document.getElementById('otherService');
 
-                const businessName = document.getElementById('businessName').value;
-                const contactPerson = document.getElementById('contactPerson').value;
-                const contactEmail = document.getElementById('contactEmail').value;
-                const contactPhone = document.getElementById('contactPhone').value;
-                const needsDescription = document.getElementById('needsDescription').value;
+        const serviceCheckboxes = form.querySelectorAll('input[name="service"]');
 
-                const servicesOfInterest = [];
-                serviceCheckboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        servicesOfInterest.push(checkbox.value);
-                    }
-                });
-
-                let otherService = '';
-                if (servicesOfInterest.includes('Other (Please specify)')) {
-                    otherService = otherServiceInputField.value;
-                }
-
-                const formData = {
-                    business_name: businessName,
-                    contact_person: contactPerson,
-                    contact_email: contactEmail,
-                    contact_phone: contactPhone,
-                    services_of_interest: servicesOfInterest,
-                    needs_description: needsDescription,
-                    other_service_specified: otherService, // Renamed for clarity in DB
-                    // Add a timestamp or created_at in Supabase for auto-generation
-                };
-
-                try {
-                    // --- Supabase Table Name ---
-                    // Make sure you have a table named 'inquiries' in your Supabase project
-                    // with columns matching the keys in `formData` (e.g., business_name TEXT, services_of_interest JSONB)
-                    const data = await supabaseFetch('POST', '/rest/v1/inquiries', [formData]);
-                    console.log('Inquiry sent successfully:', data);
-                    successMessage.style.display = 'block';
-                    form.reset(); // Clear the form
-                    otherServiceInputDiv.style.display = 'none'; // Hide other service input
-                } catch (error) {
-                    console.error('Error submitting form:', error);
-                    errorMessage.textContent = `Failed to send inquiry: ${error.message || 'Unknown error'}`;
-                    errorMessage.style.display = 'block';
-                } finally {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Send Inquiry';
-                }
-            });
+        otherServiceCheckbox.addEventListener('change', () => {
+            if (otherServiceCheckbox.checked) {
+                otherServiceInputDiv.style.display = 'block';
+                otherServiceInputField.required = true; // Make it required if selected
+            } else {
+                otherServiceInputDiv.style.display = 'none';
+                otherServiceInputField.required = false;
+                otherServiceInputField.value = ''; // Clear value if unchecked
+            }
         });
-    </script>
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending Inquiry...';
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            const businessName = document.getElementById('businessName').value;
+            const contactPerson = document.getElementById('contactPerson').value;
+            const contactEmail = document.getElementById('contactEmail').value;
+            const contactPhone = document.getElementById('contactPhone').value;
+            const needsDescription = document.getElementById('needsDescription').value;
+
+            const servicesOfInterest = [];
+            serviceCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    servicesOfInterest.push(checkbox.value);
+                }
+            });
+
+            let otherService = '';
+            if (servicesOfInterest.includes('Other (Please specify)')) {
+                otherService = otherServiceInputField.value;
+            }
+
+            const formData = {
+                business_name: businessName,
+                contact_person: contactPerson,
+                contact_email: contactEmail,
+                contact_phone: contactPhone,
+                services_of_interest: servicesOfInterest,
+                needs_description: needsDescription,
+                other_service_specified: otherService,
+            };
+
+            try {
+                // Ensure 'inquiries' is the correct table name in your Supabase project
+                const data = await supabaseFetch('POST', '/rest/v1/inquiries', [formData]);
+                console.log('Inquiry sent successfully. Response data (may be null if no JSON returned):', data);
+                successMessage.style.display = 'block';
+                form.reset(); // Clear the form
+                otherServiceInputDiv.style.display = 'none'; // Hide other service input
+                otherServiceInputField.value = ''; // Ensure field is also cleared
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                errorMessage.textContent = `Failed to send inquiry: ${error.message || 'Please check console for details.'}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Inquiry';
+            }
+        });
+    });
+</script>
 </body>
 </html>
